@@ -1,0 +1,17 @@
+# Use a imagem oficial do Golang como base
+FROM golang:1.22.3-alpine
+
+# Definir o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copiar o código-fonte para dentro do container
+COPY . .
+
+# Baixar as dependências necessárias
+RUN go mod tidy
+
+# Compilar o código Go
+RUN go build -o main .
+
+# Comando padrão ao rodar o container
+CMD ["./main"]

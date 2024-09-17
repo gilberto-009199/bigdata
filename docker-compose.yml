@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  myview:
+    build: ./myview
+    container_name: myview
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    dns:
+      - 8.8.8.8  # Adiciona o DNS do Google
+      - 1.1.1.1  # Adiciona o DNS da Cloudflare
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    privileged: true
+

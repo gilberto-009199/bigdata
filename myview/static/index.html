@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Containers Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Informações sobre Containers Docker</h1>
+    <p>Esta página é atualizada a cada 1 segundo com os dados de uso dos containers Docker.</p>
+
+    <table id="docker-info-table">
+        <thead>
+            <tr>
+                <th>Nome do Container</th>
+                <th>Imagem</th>
+                <th>Uso de CPU (%)</th>
+                <th>Uso de Memória</th>
+                <th>Limite de Memória</th>
+                <th>Porcentagem de Memória (%)</th>
+                <th>Network</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dados dos containers serão inseridos aqui -->
+        </tbody>
+    </table>
+
+    <script>
+        // Função para formatar bytes em valores legíveis
+        function formatBytes(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes === 0) return '0 Byte';
+            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+        }
+
+        // Função para atualizar a tabela com os dados da API
+        function updateDockerInfo() {
+            fetch('/api/docker-info')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#docker-info-table tbody');
+                    tableBody.innerHTML = ''; // Limpa o conteúdo atual
+
+                    data.containers.forEach(containerInfo => {
+                        const container = containerInfo.container;
+                        const stats = containerInfo.stats;
+
+                        // Cria uma nova linha na tabela para cada container
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                            <td>${container.Names[0]}</td>
+                            <td>${container.Image}</td>
+                            <td>${stats.cpu_percentage.toFixed(2)}%</td>
+                            <td>${formatBytes(stats.memory_usage)}</td>
+                            <td>${formatBytes(stats.memory_limit)}</td>
+                            <td>${stats.memory_percentage.toFixed(2)}%</td>
+                            <td><pre>${Object.keys(stats.networks)
+                                             .map((net)=>
+                                             (net+": \n\t"+
+                                                "RECI:"+formatBytes(stats.networks[net].rx_bytes)+"\n\t"+
+                                                "SEND:"+formatBytes(stats.networks[net].tx_bytes)))
+                                       }
+                                </pre>
+                            </td>
+                        `;
+
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao obter dados da API:', error);
+                });
+        }
+
+        // Atualiza a tabela a cada 1 segundo
+        setInterval(updateDockerInfo, 1500);
+
+        // Chama a função de atualização imediatamente ao carregar a página
+        updateDockerInfo();
+    </script>
+</body>
+</html>
