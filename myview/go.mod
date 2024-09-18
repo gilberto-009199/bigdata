@@ -1,4 +1,4 @@
-module dockerclient
+module mymanagerdocker
 
 go 1.22.3
 

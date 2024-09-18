@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="app.js"></script>
+    <script src="api.js"></script>
     <title>Docker Containers Info</title>
     <style>
         body {
@@ -32,6 +34,7 @@
     <table id="docker-info-table">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Nome do Container</th>
                 <th>Imagem</th>
                 <th>Uso de CPU (%)</th>
@@ -48,22 +51,16 @@
 
     <script>
         // Função para formatar bytes em valores legíveis
-        function formatBytes(bytes) {
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-            if (bytes === 0) return '0 Byte';
-            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-        }
-
-        // Função para atualizar a tabela com os dados da API
-        function updateDockerInfo() {
-            fetch('/api/docker-info')
-                .then(response => response.json())
-                .then(data => {
+        
+        // Atualiza a tabela a cada 1 segundo
+        setInterval(()=> 
+            api.fecthApi()
+            .then(data => {
                     const tableBody = document.querySelector('#docker-info-table tbody');
                     tableBody.innerHTML = ''; // Limpa o conteúdo atual
 
-                    data.containers.forEach(containerInfo => {
+                    data.ContainerStats.forEach(containerInfo => {
+                        console.log(containerInfo)
                         const container = containerInfo.container;
                         const stats = containerInfo.stats;
 
@@ -71,17 +68,20 @@
                         const row = document.createElement('tr');
 
                         row.innerHTML = `
-                            <td>${container.Names[0]}</td>
+                            <td><small>${container.Id}</small></td>
+                            <td>${container.Names ? container.Names[0] : '' }</td>
                             <td>${container.Image}</td>
-                            <td>${stats.cpu_percentage.toFixed(2)}%</td>
-                            <td>${formatBytes(stats.memory_usage)}</td>
-                            <td>${formatBytes(stats.memory_limit)}</td>
-                            <td>${stats.memory_percentage.toFixed(2)}%</td>
-                            <td><pre>${Object.keys(stats.networks)
+                            <td>${containerInfo.cpu_percentage.toFixed(2)}%</td>
+                            <td>${app.util.formatBytes(containerInfo.memory_usage)}</td>
+                            <td>${app.util.formatBytes(containerInfo.memory_limit)}</td>
+                            <td>${containerInfo.memory_percentage.toFixed(2)}%</td>
+                            <td><pre>${stats.networks ?
+                                            Object.keys(stats.networks)
                                              .map((net)=>
                                              (net+": \n\t"+
-                                                "RECI:"+formatBytes(stats.networks[net].rx_bytes)+"\n\t"+
-                                                "SEND:"+formatBytes(stats.networks[net].tx_bytes)))
+                                                "RECI:"+app.util.formatBytes(stats.networks[net].rx_bytes)+"\n\t"+
+                                                "SEND:"+app.util.formatBytes(stats.networks[net].tx_bytes)))
+                                            :'No NetWorks'
                                        }
                                 </pre>
                             </td>
@@ -90,16 +90,8 @@
                         tableBody.appendChild(row);
                     });
                 })
-                .catch(error => {
-                    console.error('Erro ao obter dados da API:', error);
-                });
-        }
+        , 1500);
 
-        // Atualiza a tabela a cada 1 segundo
-        setInterval(updateDockerInfo, 1500);
-
-        // Chama a função de atualização imediatamente ao carregar a página
-        updateDockerInfo();
     </script>
 </body>
 </html>
