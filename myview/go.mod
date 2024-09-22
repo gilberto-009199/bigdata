@@ -2,7 +2,10 @@ module mymanagerdocker
 
 go 1.22.3
 
-require github.com/docker/docker v27.2.1+incompatible
+require (
+	github.com/docker/docker v27.2.1+incompatible
+	github.com/gorilla/websocket v1.5.3
+)
 
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect

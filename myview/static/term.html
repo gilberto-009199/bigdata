@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Terminal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+    <style>
+        #terminal {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Docker Terminal</h1>
+    <div id="terminal"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm"></script>
+    <script>
+        const socket = new WebSocket('ws://localhost:8080/ws');
+
+        const terminal = new Terminal();
+        terminal.open(document.getElementById('terminal'));
+
+        let inputBuffer = '';
+
+        socket.onmessage = function(event) {
+            // Ensure the data is UTF-8 encoded text
+            if (typeof event.data === 'string') {
+                terminal.write(event.data);
+            } else {
+                terminal.write(new TextDecoder().decode(event.data));
+            }
+        };
+
+        terminal.onData(data => {
+            if (data === '\r') {
+                socket.send(inputBuffer + '\n');
+                inputBuffer = '';
+                terminal.write('\r\n');
+            } else {
+                inputBuffer += data;
+                terminal.write(data);
+            }
+        });
+
+        socket.onopen = function() {
+            const containerID = 'db66066657c0'; // Replace with your container ID
+            socket.send(containerID);
+        };
+
+        socket.onclose = function(event) {
+            terminal.write('Connection closed');
+        };
+
+        socket.onerror = function(error) {
+            terminal.write('WebSocket error: ' + error.message);
+        };
+    </script>
+</body>
+</html>

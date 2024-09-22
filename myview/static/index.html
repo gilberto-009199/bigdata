@@ -3,28 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
     <script src="app.js"></script>
     <script src="api.js"></script>
     <title>Docker Containers Info</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px;  }
+        table, th, td {  border: 1px solid black;  }
+        th, td { padding: 10px; text-align: left;    }
+        th {     background-color: #f2f2f2;   }
     </style>
 </head>
 <body>
@@ -34,7 +23,7 @@
     <table id="docker-info-table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Ações</th>
                 <th>Nome do Container</th>
                 <th>Imagem</th>
                 <th>Uso de CPU (%)</th>
@@ -48,10 +37,9 @@
             <!-- Dados dos containers serão inseridos aqui -->
         </tbody>
     </table>
-
+    <div id="terminal-container" style="width: 800px; height: 400px;"></div>
+    <input type="file" id="fileInput" style="display: none;" />
     <script>
-        // Função para formatar bytes em valores legíveis
-        
         // Atualiza a tabela a cada 1 segundo
         setInterval(()=> 
             api.fecthApi()
@@ -60,15 +48,17 @@
                     tableBody.innerHTML = ''; // Limpa o conteúdo atual
 
                     data.ContainerStats.forEach(containerInfo => {
-                        console.log(containerInfo)
                         const container = containerInfo.container;
                         const stats = containerInfo.stats;
 
                         // Cria uma nova linha na tabela para cada container
                         const row = document.createElement('tr');
-
+                        //container.Id
                         row.innerHTML = `
-                            <td><small>${container.Id}</small></td>
+                            <td>
+                                <a href="javascript:app.openTerminal('${container.Id}')">Term</a><br/>
+                                <a href="javascript:app.upload('${container.Id}')">Upload</a>
+                            </td>
                             <td>${container.Names ? container.Names[0] : '' }</td>
                             <td>${container.Image}</td>
                             <td>${containerInfo.cpu_percentage.toFixed(2)}%</td>
@@ -91,7 +81,7 @@
                     });
                 })
         , 1500);
-
+        
     </script>
 </body>
 </html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Terminal</title>
+    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
+</head>
+<body>
+    <div id="terminal-container" style="width: 800px; height: 400px;"></div>
+
+    <script>
+        // Inicializa o terminal
+        const term = new Terminal();
+        term.open(document.getElementById('terminal-container'));
+
+        // Conecta ao WebSocket do backend
+        const socket = new WebSocket("ws://localhost:8080/ws");
+        socket.binaryType = "arraybuffer";
+
+        // Variáveis para o histórico de comandos e buffer de entrada
+        let inputBuffer = '';
+        let commandHistory = [];
+        let historyIndex = -1;
+
+        // Quando o WebSocket recebe uma mensagem do backend
+        socket.onmessage = function(event) {
+            const message = new Uint8Array(event.data); // Converte o array binário para Uint8Array
+            term.write(message); // Escreve a saída do contêiner no terminal
+        };
+
+        // Função para substituir o input atual
+        function replaceInput(newInput) {
+            // Apaga a linha atual
+            term.write('\x1b[2K\r'); // ESC sequence para limpar a linha e voltar ao início
+            term.write('# '+newInput); // Escreve o novo input
+            inputBuffer = newInput; // Atualiza o buffer de entrada
+        }
+
+        // Quando o usuário digita no terminal
+        term.onData(function(input) {
+            if (input === '\r') {
+                // Enter: envia o comando ao WebSocket e adiciona ao histórico
+                socket.send(inputBuffer + '\n');
+                commandHistory.push(inputBuffer); // Salva o comando no histórico
+                historyIndex = -1; // Reseta o índice do histórico
+                inputBuffer = '';
+                term.write('\r\n');
+            } else if (input === '\u001b[A') { // Seta para cima
+                // Recupera o comando anterior do histórico
+                if (commandHistory.length > 0 && historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    replaceInput(commandHistory[commandHistory.length - 1 - historyIndex]);
+                }
+            } else if (input === '\u001b[B') { // Seta para baixo
+                // Move para frente no histórico
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    replaceInput(commandHistory[commandHistory.length - 1 - historyIndex]);
+                } else if (historyIndex === 0) {
+                    historyIndex = -1;
+                    replaceInput(''); // Limpa a linha
+                }
+            } else {
+                // Captura todos os outros inputs
+                inputBuffer += input;
+                term.write(input);
+            }
+        });
+
+        // Detecta quando o WebSocket é desconectado
+        socket.onclose = function() {
+            term.write('\r\n*** Disconnected from server ***\r\n');
+        };
+
+        socket.onerror = function(error) {
+            term.write(`\r\n*** Error: ${error.message} ***\r\n`);
+        };
+    </script>
+</body>
+</html>
