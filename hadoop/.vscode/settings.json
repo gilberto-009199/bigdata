@@ -1,0 +1,10 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "src/hadoop-client-3.4.0.jar",
+        "src/hadoop-common-3.4.0.jar",
+        "src/hadoop-hdfs-3.4.0.jar",
+        "src/hadoop-mapreduce-client-core-3.4.0.jar"
+    ]
+}

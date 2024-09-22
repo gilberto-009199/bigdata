@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="lib" path="src/hadoop-client-3.4.0.jar"/>
+    <classpathentry kind="lib" path="src/hadoop-common-3.4.0.jar"/>
+    <classpathentry kind="lib" path="src/hadoop-hdfs-3.4.0.jar"/>
+    <classpathentry kind="lib" path="src/hadoop-mapreduce-client-core-3.4.0.jar"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>
