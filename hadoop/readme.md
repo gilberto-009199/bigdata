@@ -8,8 +8,10 @@ Rodar o ambiente e o algoritmo Contador de Palavras
 cd ./src/
 ./compile.sh 
 # or ./compileScala.sh
+cd ..
 docker-compose build
 docker-compose up -d
+# await 4s, o tempo de subida dos containers 
 docker exec -it hadoop_namenode_1 /run.sh
 ```
 
