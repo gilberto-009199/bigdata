@@ -1,0 +1,40 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+FROM apache/hadoop-runner
+ARG HADOOP_URL=https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+WORKDIR /opt
+RUN sudo rm -rf /opt/hadoop && curl -LSs -o hadoop.tar.gz $HADOOP_URL && tar zxf hadoop.tar.gz && rm hadoop.tar.gz && mv hadoop* hadoop && rm -rf /opt/hadoop/share/doc
+
+RUN sudo curl -s https://archive.apache.org/dist/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz | sudo tar -xz -C /usr/local
+RUN sudo ln -s /usr/local/sqoop-1.4.7.bin__hadoop-2.6.0 /usr/local/sqoop
+RUN sudo wget https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.4/postgresql-42.7.4-all.jar -O /usr/local/sqoop/lib/postgresql-42.7.4-all.jar
+ENV PATH $PATH:/usr/local/sqoop/bin
+
+RUN wget https://filedn.com/l3HMwWFeFPE7q4xHdixbsqH/bigdata/jdk-8u431-linux-x64.rpm
+RUN sudo yum install -y jdk-8u431-linux-x64.rpm
+ENV JAVA_HOME /usr/lib/jvm/jdk-1.8.0_431-oracle-x64
+ENV PATH $PATH:/usr/lib/jvm/jdk-1.8.0_431-oracle-x64/bin
+
+WORKDIR /opt/hadoop
+ADD log4j.properties /opt/hadoop/etc/hadoop/log4j.properties
+COPY src /
+COPY src/mapred-site.xml /opt/hadoop/etc/hadoop/
+RUN sudo chown -R hadoop:users /opt/hadoop/etc/hadoop/*
+
+ENV HADOOP_CONF_DIR /opt/hadoop/etc/hadoop
+ENV HADOOP_HOME /opt/hadoop/
+ENV HADOOP_MAPRED_HOME /opt/hadoop/
+ENV HADOOP_COMMON_HOME /opt/hadoop/

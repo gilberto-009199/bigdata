@@ -4,3 +4,5 @@ hadoop/java-se-8u44-ri/*
 hadoop/scala-2.13.0
 hadoop/scala-2.13.0/
 hadoop/scala-2.13.0/*
+sqoop/postgres
+sqoop/test.sh
