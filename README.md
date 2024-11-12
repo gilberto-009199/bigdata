@@ -2,4 +2,8 @@
  
 # BigData
 
-  Workspace da materia de BigData
+  Workspace da materia de BigData, exemplos:
+  + haddop
+  + sqoop+haddop+postgresql
+  + mongodb
+
