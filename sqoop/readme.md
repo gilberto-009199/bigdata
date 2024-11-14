@@ -1,6 +1,6 @@
 # Sqoop  Example
 
-Rodar o ambiente e o algoritmo Contador de Palavras
+Rodar o ambiente e a exportação da tabela livros do postgresql para o hadoop hdfs
 
 ```bash
 $ docker-compose build --no-cache
