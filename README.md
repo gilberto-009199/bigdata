@@ -10,3 +10,5 @@
   + [mongodb](https://github.com/gilberto-009199/bigdata/tree/main/mongodb) - 
     Exemplo de cluster mongodb
 
+
+"O coração, se pudesse pensar, pararia." Fernando Pessoa
