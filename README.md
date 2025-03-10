@@ -11,4 +11,4 @@
     Exemplo de cluster mongodb
 
 
-"O coração, se pudesse pensar, pararia." Fernando Pessoa
+"O coração, se pudesse pensar..." Fernando Pessoa
