@@ -17,5 +17,3 @@ Estudos sobre BigData, usando Docker, Hadoop, Java, Scala, MongoDB e PostgreSQL.
   + [mongodb](https://github.com/gilberto-009199/bigdata/tree/main/mongodb) - 
     Exemplo de cluster mongodb
 
-
-"O coração, se pudesse pensar..." Fernando Pessoa
