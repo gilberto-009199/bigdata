@@ -2,12 +2,12 @@
  
 # BigData
 
-<img align="right" src="./assets/docker16x16.svg" alt="Docker" width="48px"/>
-<img align="right" src="./assets/hadoop.svg" alt="Hadoop" width="32px"/>
-<img align="right" src="./assets/java16x16.svg" alt="Java" width="32px"/>
-<img align="right" src="./assets/scala.svg" alt="Scala" width="32px"/>
-<img align="right" src="./assets/mongodb.svg" alt="MongoDB" width="32px"/>
-<img align="right" src="./assets/postgresql.svg" alt="PostgreSQL" width="32px"/>
+<img align="right" src="https://filedn.com/l3HMwWFeFPE7q4xHdixbsqH/github.assets/docker16x16.svg" alt="Docker" width="48px"/>
+<img align="right" src="https://filedn.com/l3HMwWFeFPE7q4xHdixbsqH/github.assets/hadoop.svg" alt="Hadoop" width="32px"/>
+<img align="right" src="https://filedn.com/l3HMwWFeFPE7q4xHdixbsqH/github.assets/java16x16.svg" alt="Java" width="32px"/>
+<img align="right" src="https://filedn.com/l3HMwWFeFPE7q4xHdixbsqH/github.assets/scala.svg" alt="Scala" width="32px"/>
+<img align="right" src="https://filedn.com/l3HMwWFeFPE7q4xHdixbsqH/github.assets/mongodb.svg" alt="MongoDB" width="32px"/>
+<img align="right" src="https://filedn.com/l3HMwWFeFPE7q4xHdixbsqH/github.assets/postgresql.svg" alt="PostgreSQL" width="32px"/>
 
 Estudos sobre BigData, usando **Docker**, **Hadoop**, **Java**, **Scala**, **MongoDB**, **MapReduce** e **PostgreSQL**.
 
